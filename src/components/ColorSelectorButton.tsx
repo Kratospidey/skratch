@@ -2,10 +2,15 @@
 "use client";
 
 import { FC, useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils"; // shadcn utility function for classNames
-import colors from "@/lib/colors"; // We'll define colors in a separate file
+import {
+	Dialog,
+	DialogContent,
+	DialogTrigger,
+	DialogTitle,
+	DialogHeader,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import colors from "@/lib/colors";
 
 interface ColorSelectorButtonProps {
 	selectedColor: string;
@@ -21,25 +26,24 @@ const ColorSelectorButton: FC<ColorSelectorButtonProps> = ({
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button
-					className="fixed top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full shadow-md flex items-center space-x-2"
-					style={{ backgroundColor: "#fff" }}
-				>
-					<span className="text-black">Color Selection</span>
+				<button className="fixed top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full shadow-md flex items-center space-x-2 bg-white text-black hover:bg-white hover:text-black focus:outline-none">
+					<span>Color Selection</span>
 					<div
 						className="w-6 h-6 rounded-full border border-gray-300"
 						style={{ backgroundColor: selectedColor }}
 					/>
-				</Button>
+				</button>
 			</DialogTrigger>
-			<DialogContent className="bg-gray-900 text-white">
-				{/* Rest of the dialog content */}
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Select a Color</DialogTitle>
+				</DialogHeader>
 				<div className="grid grid-cols-5 gap-4">
 					{colors.map((color) => (
 						<button
 							key={color.hex}
 							className={cn(
-								"w-12 h-12 rounded-full focus:outline-none",
+								"w-12 h-12 rounded-full focus:outline-none transition-transform transform hover:scale-105",
 								selectedColor === color.hex
 									? "ring-2 ring-offset-2 ring-white"
 									: ""
