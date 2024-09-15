@@ -7,13 +7,11 @@ import { signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import Canvas from "@/components/Canvas";
 import { database } from "@/lib/firebase";
 import { ref, onValue, update, get, DataSnapshot } from "firebase/database";
-import ColorPicker from "@/components/ColorPicker";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ColorSelectorButton from "@/components/ColorSelectorButton"; // We'll create this component
 
 export default function HomePage() {
 	const [userId, setUserId] = useState<string | null>(null);
-	const GRID_SIZE = 16; // Define the size of your grid
 	const COOLDOWN_PERIOD = 5000; // 5000 milliseconds = 5 seconds
 	const [cooldown, setCooldown] = useState<number>(0);
 	const [selectedColor, setSelectedColor] = useState("#E50000"); // Default color
@@ -64,7 +62,7 @@ export default function HomePage() {
 
 			if (!lastActionTime || currentTime - lastActionTime >= COOLDOWN_PERIOD) {
 				// Update the pixel data and cooldown
-				const updates: any = {};
+				const updates: { [key: string]: string | number } = {};
 				const pixelKey = `${y}:${x}`;
 				updates[`pixels/${pixelKey}`] = selectedColor;
 				updates[`cooldowns/${userId}`] = currentTime;

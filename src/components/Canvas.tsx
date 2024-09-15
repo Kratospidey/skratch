@@ -10,7 +10,8 @@ interface CanvasProps {
 	onPixelClick: (x: number, y: number) => void;
 }
 
-const GRID_SIZE = 2000;
+const GRID_WIDTH = 3000; // Number of columns
+const GRID_HEIGHT = 2000; // Number of rows
 const CELL_SIZE = 10;
 
 const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick }) => {
@@ -61,9 +62,12 @@ const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick }) => {
 		}
 	);
 
+	Cell.displayName = "Cell";
+
+
 	return (
 		<div
-			className="canvas-container"
+			className="canvas-container overflow-hidden"
 			style={{ width: "100vw", height: "100vh" }}
 		>
 			{dimensions.width > 0 && dimensions.height > 0 && (
@@ -76,8 +80,8 @@ const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick }) => {
 				>
 					<TransformComponent>
 						<Grid
-							columnCount={GRID_SIZE}
-							rowCount={GRID_SIZE}
+							columnCount={GRID_WIDTH}
+							rowCount={GRID_HEIGHT}
 							columnWidth={CELL_SIZE}
 							rowHeight={CELL_SIZE}
 							width={dimensions.width}
