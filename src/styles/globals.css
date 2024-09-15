@@ -1,0 +1,14 @@
+.dialog-overlay {
+	backdrop-filter: blur(5px);
+}
+
+/* In your global CSS or Canvas.module.css */
+.canvas-container::-webkit-scrollbar {
+	display: none;
+}
+
+.canvas-container {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
