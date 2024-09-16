@@ -26,9 +26,6 @@ const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick, cooldown }) => {
 			const canvas = canvasRef.current;
 			if (!canvas) return; // Ensure canvas is available
 
-			const width = window.innerWidth;
-			const height = window.innerHeight;
-
 			// Adjust canvas size based on window size if needed
 			if (
 				canvas.width !== GRID_WIDTH * CELL_SIZE ||
