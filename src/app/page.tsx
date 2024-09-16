@@ -107,11 +107,20 @@ export default function HomePage() {
 	return (
 		<TooltipProvider>
 			<div className="relative">
-				<Canvas pixelData={pixelData} onPixelClick={handlePixelClick} />
+				<Canvas
+					pixelData={pixelData}
+					onPixelClick={handlePixelClick}
+					cooldown={cooldown}
+				/>
 				<ColorSelectorButton
 					selectedColor={selectedColor}
 					setSelectedColor={setSelectedColor}
 				/>
+				{cooldown > 0 && (
+					<div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded">
+						Cooldown: {cooldown} seconds
+					</div>
+				)}
 			</div>
 		</TooltipProvider>
 	);
