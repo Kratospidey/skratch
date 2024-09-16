@@ -20,64 +20,27 @@ const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick, cooldown }) => {
 	// Local cache of drawn pixels
 	const drawnPixelsRef = useRef<Set<string>>(new Set());
 
-	// Handle window resize and set initial dimensions
-	useEffect(() => {
-		const handleResize = () => {
-			const canvas = canvasRef.current;
-			if (!canvas) return; // Ensure canvas is available
-
-			// Adjust canvas size based on window size if needed
-			if (
-				canvas.width !== GRID_WIDTH * CELL_SIZE ||
-				canvas.height !== GRID_HEIGHT * CELL_SIZE
-			) {
-				canvas.width = GRID_WIDTH * CELL_SIZE;
-				canvas.height = GRID_HEIGHT * CELL_SIZE;
-
-				// Fill background with white
-				const ctx = canvas.getContext("2d");
-				if (ctx) {
-					ctx.fillStyle = "#FFFFFF";
-					ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-					// Clear drawnPixelsRef since canvas was cleared
-					drawnPixelsRef.current.clear();
-
-					// Redraw all pixels
-					Object.entries(pixelData).forEach(([key, color]) => {
-						const [y, x] = key.split(":").map(Number);
-						ctx.fillStyle = color;
-						ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-						drawnPixelsRef.current.add(key);
-					});
-				}
-			}
-		};
-
-		handleResize(); // Set initial dimensions
-		window.addEventListener("resize", handleResize);
-		return () => window.removeEventListener("resize", handleResize);
-	}, [pixelData]);
-
 	// Draw pixels on the canvas
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return; // Ensure canvas is available
-
+		if (!canvas) return;
 		const ctx = canvas.getContext("2d");
-		if (!ctx) return; // Exit if context is not available
+		if (!ctx) return;
 
-		// Draw only new pixels
+		// Clear the canvas before redrawing
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		// Fill background with white
+		ctx.fillStyle = "#FFFFFF";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		// Draw each pixel from pixelData
 		Object.entries(pixelData).forEach(([key, color]) => {
-			if (drawnPixelsRef.current.has(key)) return; // Skip if already drawn
-
 			const [y, x] = key.split(":").map(Number);
 			ctx.fillStyle = color;
 			ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-
-			drawnPixelsRef.current.add(key);
 		});
-	}, [pixelData]);
+	}, [pixelData]); // Re-run the effect when pixelData changes
 
 	// Handle canvas clicks
 	const handleCanvasClick = useCallback(
@@ -117,6 +80,8 @@ const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick, cooldown }) => {
 				<TransformComponent>
 					<canvas
 						ref={canvasRef}
+						width={GRID_WIDTH * CELL_SIZE}
+						height={GRID_HEIGHT * CELL_SIZE}
 						style={{
 							cursor: cooldown > 0 ? "not-allowed" : "crosshair",
 							imageRendering: "pixelated",

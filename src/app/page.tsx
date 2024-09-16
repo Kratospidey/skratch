@@ -8,7 +8,7 @@ import Canvas from "@/components/Canvas";
 import { database } from "@/lib/firebase";
 import { ref, onValue, update, get, DataSnapshot } from "firebase/database";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import ColorSelectorButton from "@/components/ColorSelectorButton"; // We'll create this component
+import ColorSelectorButton from "@/components/ColorSelectorButton";
 import { toast } from "react-toastify";
 
 export default function HomePage() {
@@ -20,16 +20,15 @@ export default function HomePage() {
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (user) {
-				// User is signed in.
 				setUserId(user.uid);
 			} else {
-				// User is signed out; sign in anonymously.
 				signInAnonymously(auth)
 					.then((result) => {
 						setUserId(result.user.uid);
 					})
 					.catch((error) => {
 						console.error("Error signing in anonymously:", error);
+						toast.error("Authentication failed. Please refresh the page.");
 					});
 			}
 		});
@@ -45,7 +44,7 @@ export default function HomePage() {
 		const unsubscribe = onValue(pixelsRef, (snapshot) => {
 			const data = snapshot.val();
 			if (data) {
-				setPixelData(data);
+				setPixelData(data); // Update local state when data changes
 			}
 		});
 
@@ -61,23 +60,26 @@ export default function HomePage() {
 			const lastActionTime = snapshot.val();
 			const currentTime = Date.now();
 
+			// If cooldown is over or user is placing a pixel for the first time
 			if (!lastActionTime || currentTime - lastActionTime >= COOLDOWN_PERIOD) {
-				// Update the pixel data and cooldown
 				const updates: { [key: string]: string | number } = {};
 				const pixelKey = `${y}:${x}`;
+
+				// Update the pixel data with the selected color
 				updates[`pixels/${pixelKey}`] = selectedColor;
 				updates[`cooldowns/${userId}`] = currentTime;
 
 				update(ref(database), updates)
 					.then(() => {
-						// Update local state
+						// Update local state to reflect the change
 						setPixelData((prevData) => ({
 							...prevData,
-							[pixelKey]: selectedColor,
+							[pixelKey]: selectedColor, // Update the pixel color in local state
 						}));
 					})
 					.catch((error) => {
 						console.error("Error updating data:", error);
+						toast.error("Failed to place pixel. Please try again.");
 					});
 
 				// Set cooldown timer
@@ -86,7 +88,6 @@ export default function HomePage() {
 				const remainingTime = Math.ceil(
 					(COOLDOWN_PERIOD - (currentTime - lastActionTime)) / 1000
 				);
-				// Show a toast notification instead of an alert
 				toast.warn(
 					`Please wait ${remainingTime} seconds before placing another pixel.`
 				);
