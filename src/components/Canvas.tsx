@@ -10,8 +10,8 @@ interface CanvasProps {
 	onPixelClick: (x: number, y: number) => void;
 }
 
-const GRID_WIDTH = 3000; // Number of columns
-const GRID_HEIGHT = 2000; // Number of rows
+const GRID_WIDTH = 1000; // Number of columns
+const GRID_HEIGHT = 1000; // Number of rows
 const CELL_SIZE = 10;
 
 const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick }) => {

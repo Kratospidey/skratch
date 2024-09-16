@@ -9,6 +9,7 @@ import { database } from "@/lib/firebase";
 import { ref, onValue, update, get, DataSnapshot } from "firebase/database";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ColorSelectorButton from "@/components/ColorSelectorButton"; // We'll create this component
+import { toast } from "react-toastify";
 
 export default function HomePage() {
 	const [userId, setUserId] = useState<string | null>(null);
@@ -85,7 +86,8 @@ export default function HomePage() {
 				const remainingTime = Math.ceil(
 					(COOLDOWN_PERIOD - (currentTime - lastActionTime)) / 1000
 				);
-				alert(
+				// Show a toast notification instead of an alert
+				toast.warn(
 					`Please wait ${remainingTime} seconds before placing another pixel.`
 				);
 				setCooldown(remainingTime);
@@ -110,12 +112,6 @@ export default function HomePage() {
 					selectedColor={selectedColor}
 					setSelectedColor={setSelectedColor}
 				/>
-				{cooldown > 0 && (
-					<div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded">
-						Please wait {cooldown} second{cooldown > 1 ? "s" : ""} before
-						placing another pixel.
-					</div>
-				)}
 			</div>
 		</TooltipProvider>
 	);

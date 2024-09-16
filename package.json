@@ -20,6 +20,7 @@
     "next": "14.2.11",
     "react": "^18",
     "react-dom": "^18",
+    "react-toastify": "^10.0.5",
     "react-window": "^1.8.10",
     "react-zoom-pan-pinch": "^3.6.1",
     "tailwind-merge": "^2.5.2"
