@@ -17,8 +17,6 @@ const CELL_SIZE = 10; // Size of each pixel in the grid
 const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick, cooldown }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-	// Local cache of drawn pixels
-	const drawnPixelsRef = useRef<Set<string>>(new Set());
 
 	// Draw pixels on the canvas
 	useEffect(() => {
