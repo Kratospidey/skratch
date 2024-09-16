@@ -23,11 +23,11 @@ const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick, cooldown }) => {
 	// Handle window resize and set initial dimensions
 	useEffect(() => {
 		const handleResize = () => {
+			const canvas = canvasRef.current;
+			if (!canvas) return; // Ensure canvas is available
+
 			const width = window.innerWidth;
 			const height = window.innerHeight;
-
-			const canvas = canvasRef.current;
-			if (!canvas) return;
 
 			// Adjust canvas size based on window size if needed
 			if (
@@ -42,18 +42,18 @@ const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick, cooldown }) => {
 				if (ctx) {
 					ctx.fillStyle = "#FFFFFF";
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+					// Clear drawnPixelsRef since canvas was cleared
+					drawnPixelsRef.current.clear();
+
+					// Redraw all pixels
+					Object.entries(pixelData).forEach(([key, color]) => {
+						const [y, x] = key.split(":").map(Number);
+						ctx.fillStyle = color;
+						ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+						drawnPixelsRef.current.add(key);
+					});
 				}
-
-				// Clear drawnPixelsRef since canvas was cleared
-				drawnPixelsRef.current.clear();
-
-				// Redraw all pixels
-				Object.entries(pixelData).forEach(([key, color]) => {
-					const [y, x] = key.split(":").map(Number);
-					ctx.fillStyle = color;
-					ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-					drawnPixelsRef.current.add(key);
-				});
 			}
 		};
 
@@ -65,9 +65,10 @@ const Canvas: FC<CanvasProps> = ({ pixelData, onPixelClick, cooldown }) => {
 	// Draw pixels on the canvas
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+		if (!canvas) return; // Ensure canvas is available
+
 		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
+		if (!ctx) return; // Exit if context is not available
 
 		// Draw only new pixels
 		Object.entries(pixelData).forEach(([key, color]) => {
